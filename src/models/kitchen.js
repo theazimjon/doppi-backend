@@ -7,6 +7,9 @@ const categoryScheme = new Schema({
             minlength: 4,
             required: true
         },
+        photo: {
+            type: String    
+        },
         owner: {type: Types.ObjectId, ref: 'Customer'}
     },
     {

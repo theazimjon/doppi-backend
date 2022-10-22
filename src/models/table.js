@@ -16,6 +16,9 @@ const tableScheme = new Schema({
         number: {
             type: Number
         },
+        photo: {
+            type: String    
+        },
         status: {
             type: String,
             default: "active",

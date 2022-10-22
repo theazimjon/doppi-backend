@@ -6,9 +6,10 @@ class ProductController {
 
     async addCategory(req, res) {
         try {
-            const { name } = req.body;
+            const { name, photo } = req.body;
             const category = new Category({
                 name,
+                photo,
                 organization: ObjectId(req.user.organization)
             });
 
@@ -77,9 +78,9 @@ class ProductController {
             return res.status(404).json({ message: "Please provide a valid id" });
 
         try {
-            const { name, price, time, weight, status } = req.body;
+            const { name, price, time, weight, status, photo } = req.body;
             const product = new Product({
-                name, price, time, weight, status, category,
+                name, price, time, weight, status, category, photo,
                 organization: ObjectId(req.user.organization)
             });
 
@@ -110,8 +111,8 @@ class ProductController {
         if (!id)
             return res.status(404).json({ message: "Please provide a valid id" });
         try {
-            const { name, price, time, weight, status, category } = req.body;
-            const product = await Product.findByIdAndUpdate(id, {name,category, price, time, weight, status}, {
+            const { name, price, time, weight, status, category, photo } = req.body;
+            const product = await Product.findByIdAndUpdate(id, {name,category, price, time, weight, photo, status}, {
                 new: true,
                 omitUndefined: true
             });

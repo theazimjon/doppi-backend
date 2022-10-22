@@ -6,8 +6,9 @@ const { ObjectId } = require('mongodb');
 class TableController {
     async addKitchen(req, res) {
         try {
-            const { name } = req.body;
+            const { photo, name } = req.body;
             const kitchen = new Kitchen({
+                photo,
                 name,
                 owner: req.user.organization
             });
@@ -87,9 +88,9 @@ class TableController {
             return res.status(404).json({ message: "Please provide a valid id" });
 
         try {
-            const { name, address, number, status} = req.body;
+            const { name, address, number, photo, status} = req.body;
             const table = new Table({
-                name, address, number, status,
+                name, address, number, photo, status,
                 kitchen: ObjectId(kitchen),
                 owner: ObjectId(req.user._id),
             });
@@ -123,8 +124,8 @@ class TableController {
             return res.status(404).json({ message: "Please provide a valid id" });
 
         try {
-            const {name, address, number, status} = req.body;
-            const table = await Table.findByIdAndUpdate(id, {name, address, number, status}, {
+            const {name, address, number, photo, status} = req.body;
+            const table = await Table.findByIdAndUpdate(id, {name, address, number, photo, status}, {
                 new: true,
                 omitUndefined: true
             });

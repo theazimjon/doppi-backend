@@ -9,7 +9,7 @@ route.get("/categories", authentication, Product.getCategories);
 route.get("/category/:category", authentication, Product.getAllForCategory);
 route.get("/product/:id", authentication, Product.getOneById);
 route.post("/:category", authentication, Product.createWithCategory);
-route.patch("/:category", authentication, Product.update);
+route.patch("/:id", authentication, Product.update);
 route.delete("/category/:id", authentication, Product.deleteCategory);
 route.delete("/:id", authentication, Product.delete);
 
