@@ -10,7 +10,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin : '*', // !!! dev mode
+    origin : ['*', "https://doppi-frontend.vercel.app"], // !!! dev mode
     credentials:true
 }));
 app.use(express.urlencoded({
