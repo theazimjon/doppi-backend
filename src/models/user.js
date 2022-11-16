@@ -17,7 +17,7 @@ const user = new Schema({
     name: {
         type: String,
         maxlength: 22,
-        minlength: 4,
+        minlength: 3,
         required: true,
         trim: true
     },

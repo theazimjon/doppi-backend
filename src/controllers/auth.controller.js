@@ -5,11 +5,17 @@ const jwt = require("jsonwebtoken");
 const mailgun = require("mailgun-js");
 const bcrypt = require("bcrypt")
 const {ObjectId} = require("mongodb");
+const {validationResult} = require("express-validator");
 const DOMAIN = "sandbox4da593123ed3421da67dcd37da459b47.mailgun.org"
 
 class AuthController {
     async signUpForBoss(req, res){
         try {
+            const errors = validationResult(req);
+            console.log(errors);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
             const {name, address, phone, email, password} = req.body;
 
             const hashPassword = await bcrypt.hash(password, 10);
@@ -48,6 +54,10 @@ class AuthController {
     }
 
     async createManager(req, res){
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         try {
             const {name, phone, email, password} = req.body;
 
@@ -73,7 +83,10 @@ class AuthController {
     }
 
     async signUpForClient(req, res){
-
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         try {
             const {name, phone, email, password} = req.body;
 
@@ -106,6 +119,10 @@ class AuthController {
     }
 
     async signIn(req, res){
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         try {
             const {email, password} = req.body;
 
@@ -150,6 +167,10 @@ class AuthController {
     }
 
     async updatePassword(req, res){
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         try {
             console.log(req.user)
             const id = req.user._id;
