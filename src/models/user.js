@@ -30,7 +30,7 @@ const user = new Schema({
         type: String,
         trim: true
     },
-    avatar:{type: Buffer},
+    avatar:{ type: Buffer },
     email: {
         type: String,
         trim: true
@@ -38,10 +38,6 @@ const user = new Schema({
     password: {
         type: String,
         required: true
-    },
-    emailVerified: {
-        type: Boolean,
-        default: false
     },
     verify: {
         type: Boolean,

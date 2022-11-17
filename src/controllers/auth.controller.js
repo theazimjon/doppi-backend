@@ -2,17 +2,15 @@ require("dotenv").config();
 const User = require('../models/user.js');
 const Customer = require('../models/customer.js');
 const jwt = require("jsonwebtoken");
-const mailgun = require("mailgun-js");
 const bcrypt = require("bcrypt")
 const {ObjectId} = require("mongodb");
 const {validationResult} = require("express-validator");
-const DOMAIN = "sandbox4da593123ed3421da67dcd37da459b47.mailgun.org"
+const sendEmail = require("../utils/email")
 
 class AuthController {
     async signUpForBoss(req, res){
         try {
             const errors = validationResult(req);
-            console.log(errors);
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array() });
             }
@@ -31,21 +29,9 @@ class AuthController {
             await newUser.save();
 
             const token = await jwt.sign(newUser.toJSON(), process.env.ACCESS_TOKEN);
-            // const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN});
-            // const data = {
-            //     from: `theazimjon@gmail.com`,
-            // to: `makeyem777@dnitem.com`,
-            // subject: "Hello",
-            // text: "<h2>Please click on given link to activate your account</h2>\n" +
-            //     "\n" +
-            //     "<p>`${process.env.CLIENT_URL}${token}`</p>"
-            // };
-            //
-            // mg.messages().send(data, function (error, body) {
-            //     console.log(body);
-            // });
+            const text = `${process.env.BASE_URL}/auth/verify/${process.env.SECRET_HASH + '.' + newUser._id}`;
 
-
+            await sendEmail(email, text, text);
             res.status(200).json({message: "new user saved successfully", data: {user: newUser, token}});
 
         } catch (err) {
@@ -75,6 +61,10 @@ class AuthController {
 
             const token = await jwt.sign(newManager.toJSON(), process.env.ACCESS_TOKEN);
 
+            const text = `${process.env.BASE_URL}/auth/verify/${process.env.SECRET_HASH + '.' + newManager._id}`;
+
+            await sendEmail(email, text, text);
+
             res.status(200).json({message: "new user saved successfully", data: {user: newManager, token}});
 
         } catch (err) {
@@ -97,6 +87,10 @@ class AuthController {
             await newUser.save();
 
             const token = await jwt.sign(newUser.toJSON(), process.env.ACCESS_TOKEN);
+
+            const text = `${process.env.BASE_URL}/auth/verify/${process.env.SECRET_HASH + '.' + newUser._id}`;
+
+            await sendEmail(email, text, text);
 
             res.status(200).json({message: "new user saved successfully", data: {user: newUser, token}});
 
@@ -135,12 +129,16 @@ class AuthController {
             bcrypt.compare(password,user.password)
                 .then (r => {
                     if(r){
-                        res.status(200).json({message: "logged", data: {user, token}});
+                        if(user.verify) {
+                            return res.status(200).json({message: "logged", data: {user, token}});
+                        } else {
+                            return res.status(403).json({message: "Please verify you email, check spam folder too :)"})
+                        }
                     }
                     else{
                         res.status(400).json({message: "invalid password"});
                     }
-                })
+                });
         }
         catch (err) {
             res.status(400).json({message: `${err.message.split(":")[2] || err.message}, please try again later`});
@@ -148,7 +146,21 @@ class AuthController {
     }
 
     async emailVerification(req, res) {
-        const token = req.params.token;
+        try {
+            const token = req.params.token;
+            const [hash, id] = token.split(".");
+            const user = await User.findById(id);
+            if (!user) {
+                throw new Error("User not found");
+            }
+            user.verify = true;
+            console.log(user);
+            await user.save();
+            res.status(200).json({message: "user email verified successfully redirect in production..", data: {user}});
+        }
+        catch (err) {
+            res.status(400).json({message: `${err.message.split(":")[2] || err.message}, please try again later`});
+        }
 
     }
 

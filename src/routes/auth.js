@@ -18,7 +18,7 @@ route.post("/sign-up",
         .isLength({min: 8, max:40}).matches(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/),
     body("email", "please provide a valid email").isEmail(),
     Auth.signUpForClient);
-route.post("/verify/:token", Auth.signIn);
+route.get("/verify/:token", Auth.emailVerification);
 route.post("/sign-in",
     body("email", "please provide a valid email").isEmail(),
     Auth.signIn);

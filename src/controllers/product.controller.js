@@ -24,7 +24,7 @@ class ProductController {
 
     async getCategories(req, res) {
         try {
-            const categories = await Category.find({"category" : ObjectId(req.user.organization)});
+            const categories = await Category.find({"organization" : ObjectId(req.user.organization)});
             return res.status(200).json(categories);
         } catch (e) {
             return res.status(500).json({ message: `Error in ${e}, pls try again` });
@@ -48,9 +48,17 @@ class ProductController {
         const category = req.params.category;
         if (!category)
             return res.status(404).json({ message: "Please provide a valid category" });
-
         try {
-            const products = await Product.find({"category": category});
+            const products = await Product.find({"category": category, "organization" : ObjectId(req.user.organization)});
+            return res.status(200).json(products);
+        } catch (e) {
+            return res.status(500).json({message: e.message});
+        }
+    }
+
+    async getAll(req, res) {
+        try {
+            const products = await Product.find({"organization" : ObjectId(req.user.organization)});
             return res.status(200).json(products);
         } catch (e) {
             return res.status(500).json({message: e.message});

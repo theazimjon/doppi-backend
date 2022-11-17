@@ -3,7 +3,7 @@ const route = express.Router();
 const Product = require("../controllers/product.controller");
 const authentication = require("../middlewares/Authentification");
 
-
+route.get("/", authentication, Product.getAll);
 route.post("/add-category", authentication, Product.addCategory);
 route.get("/categories", authentication, Product.getCategories);
 route.get("/category/:category", authentication, Product.getAllForCategory);
