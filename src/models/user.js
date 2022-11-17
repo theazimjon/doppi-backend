@@ -33,8 +33,7 @@ const user = new Schema({
     avatar:{type: Buffer},
     email: {
         type: String,
-        trim: true,
-        unique: true
+        trim: true
     },
     password: {
         type: String,
