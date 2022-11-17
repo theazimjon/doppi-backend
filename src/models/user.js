@@ -30,7 +30,7 @@ const user = new Schema({
         type: String,
         trim: true
     },
-    avatar:{ type: Buffer },
+    avatar:{ type: String },
     email: {
         type: String,
         trim: true

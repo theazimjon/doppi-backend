@@ -1,14 +1,6 @@
-const mongoose = require("mongoose");
+// Requiring firebase (as our db)
+const firebase = require('firebase');// Importing our configuration to initialize our app
+const config = require('./firebase_config.js');// Creates and initializes a Firebase app instance. Pass options as param
+const db = firebase.initializeApp(config.firebaseConfig);module.exports = db;
 
-module.exports = async function connection() {
-    try {
-        const connectionParams = {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        };
-        await mongoose.connect(process.env.DB, connectionParams);
-        console.log("connected to database.");
-    } catch (error) {
-        console.log(error, "could not connect to the database.");
-    }
-};
+module.exports = db;

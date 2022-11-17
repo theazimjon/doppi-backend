@@ -1,6 +1,11 @@
 const Product = require('../models/product.js');
 const Category = require('../models/category.js');
 const { ObjectId } = require('mongodb');
+const firebase = require("../config/db.js"); 
+const firestore = firebase.firestore(); // if using firestore
+require("firebase/storage"); // must be required for this to work
+const storage = firebase.storage().ref(); // create a reference to storage
+global.XMLHttpRequest = require("xhr2"); // must be used to avoid bug
 
 class ProductController {
 
@@ -87,8 +92,15 @@ class ProductController {
 
         try {
             const { name, price, time, weight, status, photo } = req.body;
+
+            const file = new Buffer(photo, 'base64');
+            const fileName = "image" + (Math.random() * 1000).toString() + "jfeh"
+            const imageRef = storage.child(fileName);        // Step 2. Upload the file in the bucket storage
+            const snapshot = await imageRef.put(file.buffer);        // Step 3. Grab the public url
+            const downloadURL = await snapshot.ref.getDownloadURL();
+
             const product = new Product({
-                name, price, time, weight, status, category, photo,
+                name, price, time, weight, status, category, photo: downloadURL,
                 organization: ObjectId(req.user.organization)
             });
 
