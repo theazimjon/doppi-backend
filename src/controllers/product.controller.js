@@ -7,7 +7,14 @@ class ProductController {
 
     async addCategory(req, res) {
         try {
-            const { name, photo } = req.body;
+            const { name } = req.body;
+            let { photo} = req.body;
+
+            const file = new Buffer(photo, 'base64');
+            if(Buffer.from(file, 'base64').toString('base64') === photo){
+                photo = await uploadImage(file);
+            }
+
             const category = new Category({
                 name,
                 photo,
@@ -15,7 +22,6 @@ class ProductController {
             });
 
             console.log(category);
-
             await category.save();
             return res.status(201).json({ message: "category created successfully", category});
         } catch (e) {
@@ -87,13 +93,14 @@ class ProductController {
             return res.status(404).json({ message: "Please provide a valid id" });
 
         try {
-            const { name, price, time, weight, status, photo } = req.body;
-
+            const { name, price, time, weight, status } = req.body;
+            let { photo} = req.body;
             const file = new Buffer(photo, 'base64');
-            const downloadURL = await uploadImage(file);
-
+            if(Buffer.from(file, 'base64').toString('base64') === photo){
+                photo = await uploadImage(file);
+            }
             const product = new Product({
-                name, price, time, weight, status, category, photo: downloadURL,
+                name, price, time, weight, status, category, photo,
                 organization: ObjectId(req.user.organization)
             });
 
