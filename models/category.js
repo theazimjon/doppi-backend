@@ -11,6 +11,7 @@ const categoryScheme = new Schema({
             type: String    
         },
         organization: {type: Types.ObjectId, ref: 'Customer'},
+        kitchen: {type: Types.ObjectId, ref: 'Kitchen'}
         },
     {
         timestamps: true

@@ -13,4 +13,11 @@ route.patch("/:id", authentication, Table.updateById);
 route.delete("/kitchen/:id", authentication, Table.deleteKitchen);
 route.delete("/:id", authentication, Table.delete);
 
+// order
+route.get("/table/qrcode/:kitchen", authentication, Table.getQRCodeLinksForKitchen);
+route.get("/order/:id", authentication,Table.getOrdersForKitchen);
+route.post("/client/order/:id", Table.order);
+route.patch("/client/order/:id", Table.updateOrderById);
+
+
 module.exports = route;

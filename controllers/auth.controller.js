@@ -35,6 +35,7 @@ class AuthController {
             res.status(200).json({message: "new user saved successfully", data: {user: newUser, token}});
 
         } catch (err) {
+            console.log(err);
             res.status(500).json({message: `${err.message.split(":")[2] || err.message}, please try again later`});
         }
     }

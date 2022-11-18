@@ -3,7 +3,19 @@ const Category = require('../models/category.js');
 const { ObjectId } = require('mongodb');
 global.XMLHttpRequest = require("xhr2");
 const uploadImage = require("../utils/imageUpload")
+
 class ProductController {
+
+
+    async getCategoriesClient(req, res) {
+        try {
+            console.log("c:",req.params.kitchen);
+            let categories = await Category.find({"organization" : ObjectId(req.params.kitchen)});
+            return res.status(200).json(categories);
+        } catch (e) {
+            return res.status(500).json({ message: `Error in ${e}, pls try again` });
+        }
+    }
 
     async addCategory(req, res) {
         try {
@@ -31,7 +43,8 @@ class ProductController {
 
     async getCategories(req, res) {
         try {
-            const categories = await Category.find({"organization" : ObjectId(req.user.organization)});
+            console.log(req.user.organization);
+            let categories = await Category.find({"organization" : ObjectId(req.user.organization)});
             return res.status(200).json(categories);
         } catch (e) {
             return res.status(500).json({ message: `Error in ${e}, pls try again` });
@@ -56,7 +69,7 @@ class ProductController {
         if (!category)
             return res.status(404).json({ message: "Please provide a valid category" });
         try {
-            const products = await Product.find({"category": category, "organization" : ObjectId(req.user.organization)});
+            const products = await Product.find({"category": category});
             return res.status(200).json(products);
         } catch (e) {
             return res.status(500).json({message: e.message});
@@ -100,7 +113,7 @@ class ProductController {
                 photo = await uploadImage(file);
             }
             const product = new Product({
-                name, price, time, weight, status, category, photo,
+                name, price, time, weight, status, category: ObjectId(category), photo,
                 organization: ObjectId(req.user.organization)
             });
 
